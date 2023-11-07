@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('username', 255)->collation('utf8mb4_unicode_ci')->unique();
             $table->string('password', 255)->collation('utf8mb4_unicode_ci');
             $table->string('photo', 255)->nullable()->collation('utf8mb4_unicode_ci');
-            $table->string('firstName', 255)->nullable()->collation('utf8mb4_unicode_ci');
-            $table->string('lastName', 255)->nullable()->collation('utf8mb4_unicode_ci');
+            $table->string('firstname', 255)->nullable()->collation('utf8mb4_unicode_ci');
+            $table->string('lastname', 255)->nullable()->collation('utf8mb4_unicode_ci');
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();

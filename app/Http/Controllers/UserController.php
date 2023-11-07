@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rules;
 
 class UserController extends Controller
@@ -23,19 +26,46 @@ class UserController extends Controller
     /**
      * Update the currently authenticated user.
      */
-    public function update(UpdateUserRequest $request): UserResource
+    public function update(Request $request): JsonResponse
     {
-        $request->user()->fill($request->validated());
+        $input = $request->all();
+        $id = $request->user()->id;
+        // $addUserSponsor = $input['addUserSponsor'];
+        // $memberType = $input['memberType'] || "";
+        $skills = $input['skills'];
+        $updateAttributes = collect($input)->except(['id','username','skills'])->all();
+        
+        try {
+            DB::beginTransaction();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
-            $request->user()->sendEmailVerificationNotification();
+            $user = User::find($id);
+            if (!$user) {
+                return response()->json(['message' => "User with ID $id not found"], 404);
+            }
+
+            $updatedData = array_merge($updateAttributes, ['skills' => $skills]);
+
+            $user->update($updatedData);
+            
+            // if ($addUserSponsor && array_key_exists('currentSponsorId', $updateAttributes)) {
+                // UserCompany::create([
+                //     'userId' => $id,
+                //     'sponsorId' => $updateAttributes['currentSponsorId'],
+                //     'role' => $memberType,
+                // ]);
+            // }
+
+            DB::commit();
+
+            return response()->json($user);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e);
+            return response()->json($updatedData, 400);
         }
-
-        $request->user()->save();
-
-        return new UserResource(Auth::user()->fresh());
     }
+
+    
 
     /**
      * Update the password of the currently authenticated user.

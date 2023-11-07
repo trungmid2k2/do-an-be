@@ -33,6 +33,7 @@ class JwtAuthController extends Controller
             'lastname' => $request->lastname,
             'username' => $request->username,
             'email' => $request->email,
+            'isVerified'=> 1,
             'password' => Hash::make($request->password),
         ]);
 

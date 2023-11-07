@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\POWController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,9 +23,12 @@ Route::middleware('auth:api')->group(function () {
 });
 
 Route::middleware(['auth:api', 'verified'])->group(function () {
-    Route::patch('/user', [UserController::class, 'update'])
+    Route::post('/user/update', [UserController::class, 'update'])
         ->name('user.update');
-
+    
     Route::patch('/user/change-password', [UserController::class, 'changePassword'])
         ->name('user.change-password');
+
+    Route::post('/pow/create', [POWController::class, 'create'])
+        ->name('pow.create');
 });
