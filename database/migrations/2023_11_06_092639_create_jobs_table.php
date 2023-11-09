@@ -27,20 +27,20 @@ return new class extends Migration
             $table->integer('companyId')->unsigned();
             $table->enum('source', ['NATIVE', 'IMPORT'])->collation('utf8mb4_unicode_ci')->default('NATIVE');
             $table->json('sourceDetails')->nullable();
-            $table->tinyInteger('isPublished')->default(0);
-            $table->tinyInteger('isFeatured')->default(0);
-            $table->tinyInteger('isActive')->default(1);
-            $table->tinyInteger('isArchived')->default(0);
+            $table->boolean('isPublished')->default(false);;
+            $table->boolean('isFeatured')->default(false);;
+            $table->boolean('isActive')->default(true);;
+            $table->boolean('isArchived')->default(false);;
             $table->string('applicationLink', 255)->nullable()->collation('utf8mb4_unicode_ci');
             $table->enum('applicationType', ['rolling', 'fixed'])->collation('utf8mb4_unicode_ci')->default('fixed');
             $table->json('skills')->nullable();
-            $table->integer('totalWinnersSelected')->default(0);
+            $table->integer('totalWinnersSelected')->default(false);;
             $table->integer('totalPaymentsMade')->default(0);
-            $table->tinyInteger('isWinnersAnnounced')->default(0);
+            $table->boolean('isWinnersAnnounced')->default(false);;
             $table->enum('type', ['permissioned', 'open'])->collation('utf8mb4_unicode_ci')->default('open');
             $table->string('pocSocials', 255)->nullable()->collation('utf8mb4_unicode_ci');
             $table->string('timeToComplete', 255)->nullable()->collation('utf8mb4_unicode_ci');
-            $table->tinyInteger('hackathonprize')->default(0);
+            $table->boolean('hackathonprize')->default(false);;
             $table->json('winners')->nullable();
 
             $table->engine = 'InnoDB';

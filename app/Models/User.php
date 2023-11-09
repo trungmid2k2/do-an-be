@@ -26,8 +26,8 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
         'username',
         'password',
         'photo',
-        'firstName',
-        'lastName',
+        'firstname',
+        'lastname',
         'isVerified',
         'role',
         'totalEarned',
@@ -51,6 +51,7 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
         'currentCompanyId',
     ];
 
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -67,6 +68,11 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
      * @var array<string, string>
      */
     protected $casts = [
+        'isVerified'=>'boolean',
+        'isTalentFilled'=>'boolean',
+        'private'=>'boolean',
+        'interests'=> 'json',
+        'skills'=>'json',
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];

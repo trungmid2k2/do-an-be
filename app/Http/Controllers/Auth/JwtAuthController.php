@@ -23,8 +23,8 @@ class JwtAuthController extends Controller
         $request->validate([
             'firstname' => ['required', 'string', 'regex:/^[a-zA-Z0-9\s]+$/'],
             'lastname' => ['required', 'string', 'regex:/^[a-zA-Z0-9\s]+$/'],
-            'username' => ['required', 'string', 'regex:/^[a-zA-Z0-9\s]+$/'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'username' => ['required', 'unique:users', 'regex:/^[a-zA-Z0-9\s]+$/'],
+            'email' => ['required', 'unique:users', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -33,7 +33,7 @@ class JwtAuthController extends Controller
             'lastname' => $request->lastname,
             'username' => $request->username,
             'email' => $request->email,
-            'isVerified'=> 1,
+            'isVerified'=> true,
             'password' => Hash::make($request->password),
         ]);
 

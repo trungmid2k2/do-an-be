@@ -19,12 +19,12 @@ return new class extends Migration
             $table->json('eligibilityAnswers')->nullable();
             $table->integer('userId')->unsigned();
             $table->integer('jobId')->unsigned();
-            $table->tinyInteger('isWinner')->default(0);
+            $table->boolean('isWinner')->default(false);;
             $table->string('winnerPosition', 255)->nullable()->collation('utf8mb4_unicode_ci');
-            $table->tinyInteger('isPaid')->default(0);
+            $table->boolean('isPaid')->default(false);;
             $table->json('paymentDetails')->nullable();
-            $table->tinyInteger('isActive')->default(1);
-            $table->tinyInteger('isArchived')->default(0);
+            $table->boolean('isActive')->default(true);;
+            $table->boolean('isArchived')->default(false);;
             
             $table->json('like')->nullable();
             $table->integer('likes')->default(0);

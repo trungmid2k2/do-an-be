@@ -20,9 +20,9 @@ return new class extends Migration
             $table->string('subskills', 255)->nullable()->collation('utf8mb4_unicode_ci');
             $table->string('deadline', 255)->nullable()->collation('utf8mb4_unicode_ci');
             $table->enum('source', ['NATIVE', 'IMPORT'])->collation('utf8mb4_unicode_ci')->default('NATIVE');
-            $table->tinyInteger('active')->default(1);
-            $table->tinyInteger('private')->default(0);
-            $table->tinyInteger('featured')->default(0);
+            $table->boolean('active')->default(true);;
+            $table->boolean('private')->default(false);;
+            $table->boolean('featured')->default(false);;
             $table->string('experience', 255)->nullable()->collation('utf8mb4_unicode_ci');
             $table->enum('jobType', ['parttime', 'fulltime', 'internship'])->collation('utf8mb4_unicode_ci')->default('fulltime');
             $table->double('maxSalary')->nullable();

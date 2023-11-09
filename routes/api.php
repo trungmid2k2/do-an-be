@@ -21,13 +21,14 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/user', [UserController::class, 'show'])
         ->name('user.show');
 });
+Route::post('/user/getAllInfo', [UserController::class, 'getAllInfo'])
+        ->name('user.getAllInfo');
 
 Route::middleware(['auth:api', 'verified'])->group(function () {
     Route::post('/user/update', [UserController::class, 'update'])
         ->name('user.update');
     
-    Route::patch('/user/change-password', [UserController::class, 'changePassword'])
-        ->name('user.change-password');
+    
 
     Route::post('/pow/create', [POWController::class, 'create'])
         ->name('pow.create');

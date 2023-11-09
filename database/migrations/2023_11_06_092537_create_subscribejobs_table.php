@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('userId')->unsigned();
             $table->integer('jobId')->unsigned();
-            $table->tinyInteger('isArchived')->default(0);
+            $table->boolean('isArchived')->default(false);;
 
             $table->engine = 'InnoDB';
             $table->collation = 'utf8mb4_unicode_ci';

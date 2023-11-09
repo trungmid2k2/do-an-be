@@ -23,10 +23,10 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
-            $table->tinyInteger('isVerified')->default(0);
+            $table->boolean('isVerified')->default(false);;
             $table->enum('role', ['GOD', 'USER'])->collation('utf8mb4_unicode_ci')->default('USER');
-            $table->integer('totalEarned')->default(0);
-            $table->tinyInteger('isTalentFilled')->default(0);
+            $table->integer('totalEarned')->default(false);;
+            $table->boolean('isTalentFilled')->default(false);;
             $table->string('interests', 255)->nullable()->collation('utf8mb4_unicode_ci');
             $table->string('bio', 255)->nullable()->collation('utf8mb4_unicode_ci');
             $table->string('twitter', 255)->nullable()->collation('utf8mb4_unicode_ci');
@@ -41,7 +41,7 @@ return new class extends Migration
             $table->string('workPrefernce', 255)->nullable()->collation('utf8mb4_unicode_ci');
             $table->string('currentEmployer', 255)->nullable()->collation('utf8mb4_unicode_ci');
             $table->json('notifications')->nullable();
-            $table->tinyInteger('private')->default(0);
+            $table->boolean('private')->default(false);;
             $table->json('skills')->nullable();
             $table->integer('currentCompanyId')->default(0);
 

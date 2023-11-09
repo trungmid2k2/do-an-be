@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('message', 255)->collation('utf8mb4_unicode_ci');
             $table->integer('authorId')->unsigned();
             $table->integer('jobId')->unsigned();
-            $table->tinyInteger('isActive')->default(1);
-            $table->tinyInteger('isArchived')->default(0);
+            $table->boolean('isActive')->default(true);;
+            $table->boolean('isArchived')->default(false);;
 
             $table->engine = 'InnoDB';
             $table->collation = 'utf8mb4_unicode_ci';

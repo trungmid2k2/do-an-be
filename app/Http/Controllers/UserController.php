@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
+use App\Models\Pow;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -22,7 +23,19 @@ class UserController extends Controller
     {
         return new UserResource(Auth::user());
     }
-
+    public function getAllInfo(Request $request): JsonResponse
+    {
+        try {
+            $userData = User::where('username', $request->username)->first();
+            $userData->PoW = Pow::where('userId', $userData->id)->get();
+            // if($userData->private and $userData->id != $request->user('id')) {
+            //     throw new \Exception('User not found');
+            // }
+            return response()->json($userData, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Unable to fetch users: ' . $e->getMessage()], 500);
+        }
+    }
     /**
      * Update the currently authenticated user.
      */

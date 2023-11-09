@@ -14,4 +14,8 @@ class Pow extends Model
         'skills' => 'json',
         'subSkills' => 'json',
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'userId');
+    }
 }
