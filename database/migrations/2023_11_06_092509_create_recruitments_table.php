@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('recruitments', function (Blueprint $table) {
             $table->id();
             $table->string('title', 255)->collation('utf8mb4_unicode_ci');
-            $table->string('slug', 255)->collation('utf8mb4_unicode_ci');
+            $table->string('slug', 255)->collation('utf8mb4_unicode_ci')->unique();
             $table->string('description', 255)->nullable()->collation('utf8mb4_unicode_ci');
             $table->string('skills', 255)->nullable()->collation('utf8mb4_unicode_ci');
             $table->string('subskills', 255)->nullable()->collation('utf8mb4_unicode_ci');

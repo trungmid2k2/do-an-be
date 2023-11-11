@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('jobs', function (Blueprint $table) {
             $table->id();
             $table->string('title', 255)->collation('utf8mb4_unicode_ci');
-            $table->string('slug', 255)->collation('utf8mb4_unicode_ci');
+            $table->string('slug', 255)->collation('utf8mb4_unicode_ci')->unique();
             $table->text('description')->collation('utf8mb4_unicode_ci');
             $table->text('requirements')->collation('utf8mb4_unicode_ci');
             $table->datetime('deadline')->nullable();

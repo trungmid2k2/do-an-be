@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name', 255)->collation('utf8mb4_unicode_ci');
             $table->string('slug', 255)->collation('utf8mb4_unicode_ci')->unique();
             $table->string('logo', 255)->nullable()->collation('utf8mb4_unicode_ci');
-            $table->string('url', 255)->nullable()->collation('utf8mb4_unicode_ci');
+            $table->string('url', 255)->nullable()->collation('utf8mb4_unicode_ci')->unique();
             $table->string('industry', 255)->collation('utf8mb4_unicode_ci');
             $table->string('twitter', 255)->nullable()->collation('utf8mb4_unicode_ci');
             $table->string('bio', 255)->nullable()->collation('utf8mb4_unicode_ci');

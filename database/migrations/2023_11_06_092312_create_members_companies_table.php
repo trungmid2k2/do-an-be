@@ -21,7 +21,8 @@ return new class extends Migration
             // //$table->foreign('companyId')->references('id')->on('companies');
 
             $table->engine = 'InnoDB';
-            $table->collation = 'utf8mb4_unicode_ci';            $table->timestamps();
+            $table->collation = 'utf8mb4_unicode_ci';
+            $table->timestamps();
         });
     }
 
