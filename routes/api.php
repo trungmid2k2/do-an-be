@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\Api\Jobs\JobController;
 use App\Http\Controllers\Api\Jobs\SubscribeJobController;
@@ -42,6 +43,9 @@ Route::get('/invite', [MemberController::class, 'getInvite'])
 Route::get('/listings', [ListingController::class, 'getAll'])
     ->name('Listing.getAll');
 
+Route::get('/comment', [CommentController::class, 'get'])
+    ->name('comment.get'); 
+  
 
 Route::middleware(['auth:api', 'verified'])->group(function () {
     Route::post('/user/update', [UserController::class, 'update'])
@@ -82,12 +86,14 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
         ->name('subscribe.subscribe');
     Route::get('/jobs/check_subscribe', [SubscribeJobController::class, 'check'])
         ->name('subscribe.check');
+
     Route::post('/jobs/un_subscribe', [SubscribeJobController::class, 'unsubscribe'])
         ->name('subscribe.unsubscribe');
     Route::get('/jobs/get_subscribe', [SubscribeJobController::class, 'get'])
         ->name('subscribe.get'); 
      
-    
+    Route::post('/comment/create', [CommentController::class, 'create'])
+        ->name('comment.create'); 
       
     
 });

@@ -70,24 +70,16 @@ class MemberController extends Controller
             if (!$isAdmin and $user->role != 'GOD') {
                 throw new \Exception('You are not ADMIN');
             }
-            MemberInvite::create([
+            $invite= MemberInvite::create([
                 'email' => $email,
                 'senderId' => $userId,
                 'companyId' => $companyId,
                 'memberType' => $memberType,
-            ]);
+            ]);        
 
-            // Mail::send('emails.inviteMemberTemplate', [
-            //     'companyName' => optional($user->currentCompany)->name ?? '',
-            //     'senderName' => $user->firstName . ' ' . $user->lastName,
-            //     'link' => $this->getURL() . 'signup?invite=' . $result->id,
-            // ], function ($message) use ($email, $user) {
-            //     $message->from('Kash from Superteam <' . env('RESEND_EMAIL') . '>')
-            //         ->to($email)
-            //         ->subject($user->firstName . ' has invited you to join ' . (optional($user->currentCompany)->name ?? '') . "'s profile on Superteam Earn");
-            // });
-
-            return response()->json(['message' => 'invite sent successfully'], 200);
+            return response()->json([
+                'id'=> $invite->id,
+                'message' => 'invite sent successfully'], 200);
         } catch (\Exception $error) {
             Log::error('Error occurred: ' . $error->getMessage());
             return response()->json(['error' => $error->getMessage(), 'message' => 'Error occurred while adding a new user.'], 400);
