@@ -75,6 +75,8 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
         ->name('job.create');  
     Route::get('/jobs', [JobController::class, 'index'])
         ->name('job.index');  
+    Route::post('/jobs/update', [JobController::class, 'update'])
+        ->name('jobs.update'); 
 
     Route::post('/jobs/subscribe', [SubscribeJobController::class, 'subscribe'])
         ->name('subscribe.subscribe');
@@ -83,7 +85,8 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
     Route::post('/jobs/un_subscribe', [SubscribeJobController::class, 'unsubscribe'])
         ->name('subscribe.unsubscribe');
     Route::get('/jobs/get_subscribe', [SubscribeJobController::class, 'get'])
-        ->name('subscribe.get');  
+        ->name('subscribe.get'); 
+     
     
       
     

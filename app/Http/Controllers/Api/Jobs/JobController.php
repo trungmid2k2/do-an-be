@@ -7,6 +7,8 @@ use App\Models\Job;
 use App\Models\JobSubcrible;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class JobController extends Controller
@@ -40,23 +42,9 @@ class JobController extends Controller
 
             $total = $query->count();
 
-            $result = $query->select([
-                'id',
-                'title',
-                'slug',
-                'token',
-                'status',
-                'companyId',
-                'deadline',
-                'isPublished',
-                'rewards',
-                'rewardAmount',
-                'totalWinnersSelected',
-                'totalPaymentsMade',
-                'isWinnersAnnounced'
-            ])
+            $result = $query->select('*')
                 ->with('subscribes')
-                ->with('subscribes.user')                
+                ->with('subscribes.user')
                 ->orderBy('deadline', 'desc')
                 ->orderBy('id', 'desc')
                 ->skip($skip)
@@ -124,6 +112,22 @@ class JobController extends Controller
     }
     public function update(request $request): JsonResponse
     {
-        return response()->json();
+        $jobId = $request->input('jobId');
+        $data = $request->input('data');
+        if (is_array($data) && array_key_exists('deadline', $data)) {
+            $deadline = $data['deadline'];
+            $data['deadline'] = Carbon::parse($deadline)->toDateTimeString();
+        }
+        try {
+            $result = Job::where('id', $jobId)->update($data);
+
+            return response()->json($result, 200);
+        } catch (\Exception $error) {
+
+            return response()->json([
+                'error' => $data,
+                'message' => "Error occurred while updating job",
+            ], 400);
+        }
     }
 }
