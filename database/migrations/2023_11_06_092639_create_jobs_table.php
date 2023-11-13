@@ -13,41 +13,39 @@ return new class extends Migration
     {
         Schema::create('jobs', function (Blueprint $table) {
             $table->id();
-            $table->string('title', 255)->collation('utf8mb4_unicode_ci');
-            $table->string('slug', 255)->collation('utf8mb4_unicode_ci')->unique();
-            $table->text('description')->collation('utf8mb4_unicode_ci');
-            $table->text('requirements')->collation('utf8mb4_unicode_ci');
-            $table->datetime('deadline')->nullable();
+            $table->string('title', 191);
+            $table->string('slug', 191);
+            $table->text('description')->nullable();
+            $table->text('requirements')->nullable();
+            $table->dateTime('deadline')->nullable();
             $table->json('eligibility')->nullable();
             $table->json('references')->nullable();
-            $table->enum('status', ['OPEN', 'REVIEW', 'CLOSED'])->collation('utf8mb4_unicode_ci')->default('OPEN');
-            $table->string('currency', 255)->nullable()->collation('utf8mb4_unicode_ci');
+            $table->enum('status', ['OPEN', 'REVIEW', 'CLOSED'])->default('OPEN');
+            $table->string('token', 191)->nullable();
             $table->integer('rewardAmount')->nullable();
             $table->json('rewards')->nullable();
-            $table->integer('companyId')->unsigned();
-            $table->enum('source', ['NATIVE', 'IMPORT'])->collation('utf8mb4_unicode_ci')->default('NATIVE');
+            $table->string('companyId', 191)->notNullable();
+            $table->string('region')->default('');
+            $table->string('pocId', 191)->notNullable();
+            $table->enum('source', ['NATIVE', 'IMPORT'])->default('NATIVE');
             $table->json('sourceDetails')->nullable();
-            $table->boolean('isPublished')->default(false);;
-            $table->boolean('isFeatured')->default(false);;
-            $table->boolean('isActive')->default(true);;
-            $table->boolean('isArchived')->default(false);;
-            $table->string('applicationLink', 255)->nullable()->collation('utf8mb4_unicode_ci');
-            $table->enum('applicationType', ['rolling', 'fixed'])->collation('utf8mb4_unicode_ci')->default('fixed');
-            $table->json('skills')->nullable();
-            $table->integer('totalWinnersSelected')->default(false);;
-            $table->integer('totalPaymentsMade')->default(0);
-            $table->boolean('isWinnersAnnounced')->default(false);;
-            $table->enum('type', ['permissioned', 'open'])->collation('utf8mb4_unicode_ci')->default('open');
-            $table->string('pocSocials', 255)->nullable()->collation('utf8mb4_unicode_ci');
-            $table->string('timeToComplete', 255)->nullable()->collation('utf8mb4_unicode_ci');
-            $table->boolean('hackathonprize')->default(false);;
-            $table->json('winners')->nullable();
-
-            $table->engine = 'InnoDB';
-            $table->collation = 'utf8mb4_unicode_ci';
-
-            //$table->foreign('companyId')->references('id')->on('companys');
+            $table->boolean('isPublished')->default(0);
+            $table->boolean('isFeatured')->default(0);
+            $table->boolean('isActive')->default(1);
+            $table->boolean('isArchived')->default(0);
             $table->timestamps();
+            $table->string('applicationLink', 191)->nullable();
+            $table->enum('applicationType', ['rolling', 'fixed'])->default('fixed');
+            $table->json('skills')->nullable();
+            $table->integer('totalWinnersSelected')->default(0);
+            $table->integer('totalPaymentsMade')->default(0);
+            $table->boolean('isWinnersAnnounced')->default(0);
+            $table->string('templateId', 191)->nullable();
+            $table->enum('type', ['permissioned', 'open'])->default('open');
+            $table->string('pocSocials', 191)->nullable();
+            $table->string('timeToComplete', 191)->nullable();
+            $table->boolean('hackathonprize')->default(0);
+            $table->json('winners')->nullable();
         });
     }
 

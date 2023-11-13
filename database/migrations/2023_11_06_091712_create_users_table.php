@@ -44,7 +44,6 @@ return new class extends Migration
             $table->boolean('private')->default(false);;
             $table->json('skills')->nullable();
             $table->integer('currentCompanyId')->default(0);
-            $table->json('currentCompany');
 
             $table->engine = 'InnoDB';
             $table->collation = 'utf8mb4_unicode_ci';
