@@ -60,8 +60,8 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
     Route::post('/pow/edit', [POWController::class, 'edit'])
         ->name('pow.edit');
 
-    Route::post('/userCompanies', [UserController::class, 'getUserCompanies'])
-        ->name('user.getUserCompanies');
+    Route::post('/userCompanies', [UserController::class, 'getuserCompanies'])
+        ->name('user.getuserCompanies');
 
     Route::post('/company/create', [CompanyController::class, 'createCompany'])
         ->name('company.createCompany');

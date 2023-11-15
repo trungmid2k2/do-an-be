@@ -18,7 +18,10 @@ class JobSubcrible extends Model
         'isChosen',
         'isActive'
     ];
-
+    protected $casts = [
+        'isChosen' => 'boolean',
+        'isActive' => 'boolean',
+    ];
     // Khai báo mối quan hệ với bảng 'users'
     public function user()
     {

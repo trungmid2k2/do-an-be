@@ -32,7 +32,7 @@ class UserController extends Controller
         $userCompany = MemberCompany::where('userId', $user->id)
         ->get();
         $user->currentCompany = $currentCompany;
-        $user->UserCompanies = $userCompany;
+        $user->userCompanies = $userCompany;
         return response()->json($user);
     }
     public function getAllInfo(Request $request): JsonResponse
@@ -77,7 +77,7 @@ class UserController extends Controller
 
     // Function to correct skills (you can adjust this to your logic)
    
-    public function getUserCompanies(Request $request): JsonResponse
+    public function getuserCompanies(Request $request): JsonResponse
     {
         
         $userId = $request->userId;

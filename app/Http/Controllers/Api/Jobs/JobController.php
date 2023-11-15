@@ -51,7 +51,7 @@ class JobController extends Controller
                 ->take($take)
                 ->get();
 
-
+           
             return response()->json(['total' => $total, 'data' => $result]);
         } catch (\Exception $error) {
             return response()->json([
@@ -114,18 +114,26 @@ class JobController extends Controller
     {
         $jobId = $request->input('jobId');
         $data = $request->input('data');
+        $chosen = $request->input('chosen');
         if (is_array($data) && array_key_exists('deadline', $data)) {
             $deadline = $data['deadline'];
             $data['deadline'] = Carbon::parse($deadline)->toDateTimeString();
         }
         try {
             $result = Job::where('id', $jobId)->update($data);
+            
+
+            if($chosen >= 0){
+                JobSubcrible::where('userId', $chosen)
+                ->where('jobId', $jobId)
+                ->update(['isChosen'=> true]);
+            }
 
             return response()->json($result, 200);
         } catch (\Exception $error) {
 
             return response()->json([
-                'error' => $data,
+                'error' => $chosen,
                 'message' => "Error occurred while updating job",
             ], 400);
         }

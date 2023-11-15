@@ -56,6 +56,7 @@ class Job extends Model
         'isArchived' => 'boolean',
         'isPublished' => 'boolean',
         'isFeatured' => 'boolean',
+        'isWinnersAnnounced' => 'boolean',
         'rewards' => 'json',
         'hackathonprize' => 'boolean',
     ];
@@ -64,6 +65,8 @@ class Job extends Model
     {
         $this->attributes['deadline'] = Carbon::parse($value)->toDateTimeString();
     }
+
+
     public function company()
     {
         return $this->belongsTo(Company::class, 'companyId');
