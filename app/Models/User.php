@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use App\Notifications\ResetPasswordRequest;
 
 class User extends Authenticatable implements JWTSubject, MustVerifyEmail
 {
@@ -68,11 +69,11 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
      * @var array<string, string>
      */
     protected $casts = [
-        'isVerified'=>'boolean',
-        'isTalentFilled'=>'boolean',
-        'private'=>'boolean',
-        'interests'=> 'json',
-        'skills'=>'json',
+        'isVerified' => 'boolean',
+        'isTalentFilled' => 'boolean',
+        'private' => 'boolean',
+        'interests' => 'json',
+        'skills' => 'json',
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];

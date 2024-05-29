@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\Jobs\JobController;
 use App\Http\Controllers\Api\Jobs\SubscribeJobController;
 use App\Http\Controllers\Api\ListingController;
 use App\Http\Controllers\Api\MemberController;
+use App\Http\Controllers\Api\NewPasswordController;
 use App\Http\Controllers\Api\POWController;
 use App\Http\Controllers\Api\UserController;
 use App\Models\MemberCompany;
@@ -29,9 +30,9 @@ Route::middleware('auth:api')->group(function () {
         ->name('user.show');
 });
 Route::get('/getjob', [JobController::class, 'get'])
-        ->name('job.get'); 
+    ->name('job.get');
 Route::get('/getjob/count_subscribe', [SubscribeJobController::class, 'count'])
-        ->name('subscribe.count'); 
+    ->name('subscribe.count');
 
 
 Route::post('/user/getAllInfo', [UserController::class, 'getAllInfo'])
@@ -44,14 +45,18 @@ Route::get('/listings', [ListingController::class, 'getAll'])
     ->name('Listing.getAll');
 
 Route::get('/comment', [CommentController::class, 'get'])
-    ->name('comment.get'); 
-  
+    ->name('comment.get');
+
+Route::put('/reset_password/{token}', [NewPasswordController::class, 'resetPassword']);
+Route::post('/forgot_password', [NewPasswordController::class, 'forgot_password']);
 
 Route::middleware(['auth:api', 'verified'])->group(function () {
     Route::post('/user/update', [UserController::class, 'update'])
         ->name('user.update');
     Route::post('/user/edit', [UserController::class, 'edit'])
         ->name('user.edit');
+    Route::post('/user/change_password', [UserController::class, 'change_password'])
+        ->name('user.change_password');
 
     Route::post('/pow/create', [POWController::class, 'create'])
         ->name('pow.create');
@@ -76,11 +81,11 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
         ->name('member.acceptInvite');
 
     Route::post('/jobs/create', [JobController::class, 'create'])
-        ->name('job.create');  
+        ->name('job.create');
     Route::get('/jobs', [JobController::class, 'index'])
-        ->name('job.index');  
+        ->name('job.index');
     Route::post('/jobs/update', [JobController::class, 'update'])
-        ->name('jobs.update'); 
+        ->name('jobs.update');
 
     Route::post('/jobs/subscribe', [SubscribeJobController::class, 'subscribe'])
         ->name('subscribe.subscribe');
@@ -90,10 +95,8 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
     Route::post('/jobs/un_subscribe', [SubscribeJobController::class, 'unsubscribe'])
         ->name('subscribe.unsubscribe');
     Route::get('/jobs/get_subscribe', [SubscribeJobController::class, 'get'])
-        ->name('subscribe.get'); 
-     
+        ->name('subscribe.get');
+
     Route::post('/comment/create', [CommentController::class, 'create'])
-        ->name('comment.create'); 
-      
-    
+        ->name('comment.create');
 });

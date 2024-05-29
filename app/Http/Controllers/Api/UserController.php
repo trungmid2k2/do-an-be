@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\CompanyResource;
 use App\Http\Resources\UserResource;
@@ -10,6 +11,7 @@ use App\Models\Company;
 use App\Models\MemberCompany;
 use App\Models\Pow;
 use App\Models\User;
+use ChangePassword;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,12 +27,12 @@ class UserController extends Controller
      * Show the currently authenticated user.
      */
     public function show(): JsonResponse
-    {   
+    {
         $user = Auth::user();
         $currentCompany = Company::where('id', $user->currentCompanyId)
-        ->first();
+            ->first();
         $userCompany = MemberCompany::where('userId', $user->id)
-        ->get();
+            ->get();
         $user->currentCompany = $currentCompany;
         $user->userCompanies = $userCompany;
         return response()->json($user);
@@ -50,7 +52,7 @@ class UserController extends Controller
     }
     public function edit(Request $request): JsonResponse
     {
-        
+
         $requestData = $request->all();
         $id = $request->user()->id;
         $email = $requestData['email'] ?? null;
@@ -64,7 +66,7 @@ class UserController extends Controller
             $user = User::find($id);
             if ($user) {
 
-                $user->update($data);                
+                $user->update($data);
                 return response()->json($user);
             } else {
                 return response()->json(['error' => 'User not found.'], 404);
@@ -76,23 +78,23 @@ class UserController extends Controller
     }
 
     // Function to correct skills (you can adjust this to your logic)
-   
+
     public function getuserCompanies(Request $request): JsonResponse
     {
-        
+
         $userId = $request->userId;
 
         try {
             $userCompany = MemberCompany::where('userId', $userId)
                 ->orderBy('updated_at', 'asc')
                 ->first();
-            if(empty($userCompany)) {
-                return response()->json([]); 
+            if (empty($userCompany)) {
+                return response()->json([]);
             }
             $result = Company::where('id', $userCompany->companyId)
-            ->orderBy('updated_at', 'asc')
-            ->first();
-            return response()->json([$result]); 
+                ->orderBy('updated_at', 'asc')
+                ->first();
+            return response()->json([$result]);
         } catch (\Exception $error) {
             Log::error('Error occurred: ' . $error->getMessage());
             return response()->json([
@@ -100,9 +102,8 @@ class UserController extends Controller
                 'message' => 'Error occurred while fetching user sponsors.',
             ], 400);
         }
-        
     }
-    
+
     /**
      * Update the currently authenticated user.
      */
@@ -111,8 +112,8 @@ class UserController extends Controller
         $input = $request->all();
         $id = $request->user()->id;
         // $skills = $input['skills'];
-        $updateAttributes = collect($input)->except(['id','username'])->all();
-        
+        $updateAttributes = collect($input)->except(['id', 'username'])->all();
+
         try {
             DB::beginTransaction();
 
@@ -125,14 +126,14 @@ class UserController extends Controller
 
             $user->update($updateAttributes);
             $currentCompany = Company::where('id', $user->currentCompanyId)
-            ->first();
+                ->first();
             $user->currentCompany = $currentCompany;
             // if ($addUserSponsor && array_key_exists('currentSponsorId', $updateAttributes)) {
-                // UserCompany::create([
-                //     'userId' => $id,
-                //     'sponsorId' => $updateAttributes['currentSponsorId'],
-                //     'role' => $memberType,
-                // ]);
+            // UserCompany::create([
+            //     'userId' => $id,
+            //     'sponsorId' => $updateAttributes['currentSponsorId'],
+            //     'role' => $memberType,
+            // ]);
             // }
 
             DB::commit();
@@ -147,23 +148,29 @@ class UserController extends Controller
         }
     }
 
-    
+
 
     /**
      * Update the password of the currently authenticated user.
      */
-    public function changePassword(Request $request): JsonResponse
+    public function change_password(ChangePasswordRequest $request): JsonResponse
     {
-        $request->validate([
-            'password' => ['required', 'confirmed', Rules\Password::defaults()]
-        ]);
+        $user = $request->user();
 
-        $request->user()->update([
-            'password' => Hash::make($request->password)
-        ]);
+        // Check if the old password matches
+        if (!Hash::check($request->old_password, $user->password)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Old password is incorrect.'
+            ], 400);
+        }
+
+        // Update the password
+        $user->password = Hash::make($request->password);
+        $user->save();
 
         return response()->json([
             'status' => 'Password updated.'
-        ]);
+        ], 200);
     }
 }
