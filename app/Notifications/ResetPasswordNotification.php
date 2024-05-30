@@ -39,11 +39,11 @@ class ResetPasswordNotification extends Notification
     public function toMail($notifiable)
     {
         // dd(notifiable);
-        $url = url('reset_password/' . $this->token);
+        $url = "http://localhost:3000/reset-password";
 
         return (new MailMessage)
-            ->line('You are receiving this email because we received a password reset request for your account.')
-            ->action('Reset Password', url($url))
-            ->line('If you did not request a password reset, no further action is required.');
+            ->line('Bạn nhận được email này vì chúng tôi đã nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn.')
+            ->action('Đặt lại mật khẩu', url($url))
+            ->line('Nếu bạn không yêu cầu đặt lại mật khẩu thì không cần thực hiện thêm hành động nào.');
     }
 }

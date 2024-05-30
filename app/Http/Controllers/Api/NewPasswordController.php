@@ -19,7 +19,7 @@ class NewPasswordController extends Controller
     public function forgot_password(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
+            'email' => 'required|email|exists:users,email',
         ]);
 
         $user = User::where('email', $request->email)->firstOrFail();
@@ -33,7 +33,8 @@ class NewPasswordController extends Controller
         }
 
         return response()->json([
-            'message' => 'We have e-mailed your password reset link!'
+            'message' => 'We have e-mailed your password reset link!',
+            'data' => $passwordReset
         ]);
     }
 
@@ -57,7 +58,7 @@ class NewPasswordController extends Controller
         $passwordReset->delete();
 
         return response()->json([
-            'success' => "thành công",
+            'success' => "Thành công",
         ]);
     }
 }
