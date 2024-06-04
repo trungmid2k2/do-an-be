@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 class SubscribeJobController extends Controller
 {
     public function get(request $request): JsonResponse
-    {  
+    {
         $jobId = $request->input("jobId");
         try {
             $result = JobSubcrible::where('jobId', $jobId)
@@ -93,5 +93,42 @@ class SubscribeJobController extends Controller
     public function unSubscribe(request $request): JsonResponse
     {
         return response()->json($request);
+    }
+    public function countUserSubscribedJob(Request $request): JsonResponse
+    {
+        $userId = $request->user()->id;
+
+        try {
+            $job_subscribed = JobSubcrible::where('userId', $userId)
+                ->where('isActive', true)
+                ->count();
+            $job_isChosen = JobSubcrible::where('userId', $userId)
+                ->where('isChosen', true)
+                ->count();
+            $data = [
+                "job_subscribed" => $job_subscribed,
+                "job_isChosen" => $job_isChosen
+            ];
+            return response()->json($data);
+        } catch (\Exception $error) {
+            return response()->json([
+                'error' => $error->getMessage(),
+                'message' => "Error occurred while counting user subscriptions."
+            ], 400);
+        }
+    }
+    public function getJob(Request $request): JsonResponse
+    {
+        try {
+
+            $query = JobSubcrible::all();
+
+            return response()->json($query);
+        } catch (\Exception $error) {
+            return response()->json([
+                'error' => $error->getMessage(),
+                'message' => "Error occurred while counting user subscriptions."
+            ], 400);
+        }
     }
 }

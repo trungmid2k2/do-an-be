@@ -45,6 +45,7 @@ class Job extends Model
         'templateId',
         'timeToComplete',
         'hackathonprize',
+        "winner",
     ];
 
     protected $casts = [
@@ -75,7 +76,8 @@ class Job extends Model
     {
         return $this->belongsTo(User::class, 'userId');
     }
-    public function subscribes() {
+    public function subscribes()
+    {
         return $this->hasMany(JobSubcrible::class, 'jobId', 'id');
     }
 }
