@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\MemberController;
 use App\Http\Controllers\Api\NewPasswordController;
 use App\Http\Controllers\Api\POWController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\StatisticsController;
 use App\Models\MemberCompany;
 use Illuminate\Support\Facades\Route;
 
@@ -37,6 +38,8 @@ Route::get('/getjob/count_subscribe', [SubscribeJobController::class, 'count'])
 
 Route::post('/user/getAllInfo', [UserController::class, 'getAllInfo'])
     ->name('user.getAllInfo');
+
+
 Route::get('/invite', [MemberController::class, 'getInvite'])
     ->name('member.getInvite');
 
@@ -55,8 +58,18 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
         ->name('user.update');
     Route::post('/user/edit', [UserController::class, 'edit'])
         ->name('user.edit');
+    Route::delete('/user/delete', [UserController::class, 'deleteUser']);
+
     Route::post('/user/change_password', [UserController::class, 'change_password'])
         ->name('user.change_password');
+    Route::get('/user/get_all_users', [UserController::class, 'getAllUsers']);
+
+
+
+    Route::get('/admin/statistics', [StatisticsController::class, 'getStatistics']);
+
+    // ->name('user.getAllUsers');
+
 
     Route::post('/pow/create', [POWController::class, 'create'])
         ->name('pow.create');
@@ -79,6 +92,9 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
         ->name('member.inviteMember');
     Route::post('/members/accept/', [MemberController::class, 'acceptInvite'])
         ->name('member.acceptInvite');
+    Route::delete('/members/delete', [MemberController::class, 'deleteMember']);
+
+
 
     Route::post('/jobs/create', [JobController::class, 'create'])
         ->name('job.create');
@@ -91,6 +107,10 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
         ->name('subscribe.subscribe');
     Route::get('/jobs/check_subscribe', [SubscribeJobController::class, 'check'])
         ->name('subscribe.check');
+
+    Route::get('/jobs/user_subcribed', [SubscribeJobController::class, 'countUserSubscribedJob']);
+    Route::get('/jobs/get_job', [SubscribeJobController::class, 'getJob']);
+
 
     Route::post('/jobs/un_subscribe', [SubscribeJobController::class, 'unsubscribe'])
         ->name('subscribe.unsubscribe');

@@ -26,6 +26,7 @@ class UserController extends Controller
     /**
      * Show the currently authenticated user.
      */
+
     public function show(): JsonResponse
     {
         $user = Auth::user();
@@ -172,5 +173,50 @@ class UserController extends Controller
         return response()->json([
             'status' => 'Password updated.'
         ], 200);
+    }
+    public function getAllUsers(Request $request): JsonResponse
+    {
+        $skip = $request->input('skip', 0);
+        $take = $request->input('take', 15);
+        $searchText = $request->input('searchText', '');
+
+
+        try {
+            $query = User::query();
+
+            if (!empty($searchText)) {
+                $query->where('username', 'like', '%' . $searchText . '%');
+            }
+
+
+            $totalUsers = $query->count();
+            $users = $query->skip($skip)->take($take)->get();
+        } catch (\Exception $error) {
+            Log::error('Error occurred: ' . $error->getMessage());
+            return response()->json(['error' => $error->getMessage(), 'message' => 'Error occurred while fetching users.'], 400);
+        }
+
+        return response()->json([
+            'total' => $totalUsers,
+            'data' => $users
+        ]);
+    }
+    public function deleteUser(Request $request): JsonResponse
+    {
+        $id = $request->input('id');
+
+        try {
+            $user = User::find($id);
+            if (!$user) {
+                return response()->json(['error' => 'User not found.'], 404);
+            }
+
+            $user->delete();
+
+            return response()->json(['message' => 'User deleted successfully.']);
+        } catch (\Exception $error) {
+            Log::error('Error occurred: ' . $error->getMessage());
+            return response()->json(['error' => $error->getMessage(), 'message' => 'Error occurred while deleting user.'], 400);
+        }
     }
 }

@@ -117,6 +117,7 @@ class CompanyController extends Controller
 
             User::where('id', $data['userId'])->update([
                 'currentCompanyId' => $company->id,
+                'isAdmin' => true,
             ]);
 
             return response()->json($company, 200);

@@ -24,7 +24,7 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
             $table->boolean('isVerified')->default(false);;
-            $table->enum('role', ['GOD', 'USER'])->collation('utf8mb4_unicode_ci')->default('USER');
+            $table->enum('role', ['GOD', 'USER', "ADMIN"])->collation('utf8mb4_unicode_ci')->default('USER');
             $table->integer('totalEarned')->default(false);;
             $table->boolean('isTalentFilled')->default(false);;
             $table->string('interests', 255)->nullable()->collation('utf8mb4_unicode_ci');
@@ -44,6 +44,8 @@ return new class extends Migration
             $table->boolean('private')->default(false);;
             $table->json('skills')->nullable();
             $table->integer('currentCompanyId')->default(0);
+            $table->boolean('isAdmin')->default(false);;
+
 
             $table->engine = 'InnoDB';
             $table->collation = 'utf8mb4_unicode_ci';

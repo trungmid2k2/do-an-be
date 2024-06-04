@@ -70,16 +70,17 @@ class MemberController extends Controller
             if (!$isAdmin and $user->role != 'GOD') {
                 throw new \Exception('You are not ADMIN');
             }
-            $invite= MemberInvite::create([
+            $invite = MemberInvite::create([
                 'email' => $email,
                 'senderId' => $userId,
                 'companyId' => $companyId,
                 'memberType' => $memberType,
-            ]);        
+            ]);
 
             return response()->json([
-                'id'=> $invite->id,
-                'message' => 'invite sent successfully'], 200);
+                'id' => $invite->id,
+                'message' => 'invite sent successfully'
+            ], 200);
         } catch (\Exception $error) {
             Log::error('Error occurred: ' . $error->getMessage());
             return response()->json(['error' => $error->getMessage(), 'message' => 'Error occurred while adding a new user.'], 400);
@@ -117,6 +118,36 @@ class MemberController extends Controller
             return response()->json(['messgae' => 'Done'], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Error occurred while getting the invite.'], 400);
+        }
+    }
+    public function deleteMember(Request $request): JsonResponse
+    {
+        $userId = $request->input('userId');
+        $companyId = $request->input('companyId');
+        $currentUserId = $request->user()->id;
+        if (!$userId || !$companyId) {
+            return response()->json(['error' => 'Missing userId or companyId'], 400);
+        }
+        try {
+            $isAdmin  = MemberCompany::where('companyId', $companyId)
+                ->where('userId', $currentUserId)
+                ->where('role', 'ADMIN')
+                ->exists();
+            if (!$isAdmin) {
+                return response()->json(['error' => 'You are not authorized to delete members.'], 403);
+            }
+            $member = MemberCompany::where('userId', $userId)
+                ->where('companyId', $companyId)
+                ->first();
+            if ($member) {
+                $member->delete();
+                User::where('id', $userId)->update(['currentCompanyId' => 0]);
+                return response()->json(['message' => 'Member deleted successfully'], 200);
+            } else {
+                return response()->json(['error' => 'Member not found'], 404);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error occurred while deleting the member.'], 400);
         }
     }
 }
