@@ -40,7 +40,7 @@ class ListingController extends Controller
             : [];
 
         try {
-
+            $query = Job::query();
             $jobs = Job::where('isPublished', true)
                 ->where('isActive', true)
                 ->where('hackathonprize', false)
@@ -51,12 +51,8 @@ class ListingController extends Controller
                         foreach ($skillsToFilter as $skill) {
                             $query->orWhereJsonContains('skills', [['skills' => $skill]]);
                         }
-                        // $query->where('skills', 'LIKE', '%' . $skillsToFilter[0] . '%')
-                        //     ->orWhere('skills', 'LIKE', '%' . $skillsToFilter[1] . '%')
-                        //     ->orWhere('skills', 'LIKE', '%' . $skillsToFilter[2] . '%');
                     } else if (count($skillsToFilter) == 1) {
                         $query->whereJsonContains('skills', [['skills' => $skillsToFilter[0]]]);
-                        // $query->where('skills', 'LIKE', '%' . $skillsToFilter[0] . '%');
                     } else {
                         return;
                     }
@@ -68,7 +64,7 @@ class ListingController extends Controller
                 ->get();
 
             // $results = Job::
-
+            $total = $query->count();
             $sortedData = $jobs->sortBy(function ($job) {
                 return Carbon::parse($job->deadline);
             })->values()->all();
@@ -77,7 +73,7 @@ class ListingController extends Controller
 
 
 
-            return response()->json($result);
+            return response()->json(['total' => $total, "data" => $result]);
         } catch (\Exception $error) {
             return response()->json([
                 'error' => $error->getMessage(),
