@@ -176,21 +176,25 @@ class UserController extends Controller
     }
     public function getAllUsers(Request $request): JsonResponse
     {
-        $skip = $request->input('skip', 0);
-        $take = $request->input('take', 15);
+        $skip = $request->input('skip', 1);
+        $take = $request->input('take', 10);
         $searchText = $request->input('searchText', '');
+        $whereSearch = $searchText
+            ? [['username', 'like', '%' . $searchText . '%']]
+            : [];
 
 
         try {
             $query = User::query();
-
+            $query->where('role', 'USER');
             if (!empty($searchText)) {
-                $query->where('username', 'like', '%' . $searchText . '%');
+                $query->where('firstname', 'like', '%' . $searchText . '%')
+                    ->orWhere('lastname', 'like', '%' . $searchText . '%');
             }
 
 
             $totalUsers = $query->count();
-            $users = $query->skip($skip)->take($take)->get();
+            $users = $query->where($whereSearch)->skip($skip)->take($take)->get();
         } catch (\Exception $error) {
             Log::error('Error occurred: ' . $error->getMessage());
             return response()->json(['error' => $error->getMessage(), 'message' => 'Error occurred while fetching users.'], 400);

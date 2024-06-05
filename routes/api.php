@@ -67,6 +67,7 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
 
 
     Route::get('/admin/statistics', [StatisticsController::class, 'getStatistics']);
+    Route::get('/admin/get_quantity', [StatisticsController::class, 'getQuantity']);
 
     // ->name('user.getAllUsers');
 
@@ -85,6 +86,14 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
         ->name('company.createCompany');
     Route::post('/company/list', [CompanyController::class, 'listCompany'])
         ->name('company.listCompany');
+    Route::get('/company/get_list_companies', [CompanyController::class, 'getListCompanies']);
+    Route::get('/company/jobs_company', [CompanyController::class, 'jobsCompany']);
+    Route::delete('/company/delete', [CompanyController::class, 'deleteCompany']);
+
+
+
+
+
 
     Route::get('/members', [MemberController::class, 'getMember'])
         ->name('member.getMember');
@@ -102,6 +111,9 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
         ->name('job.index');
     Route::post('/jobs/update', [JobController::class, 'update'])
         ->name('jobs.update');
+    Route::delete('/jobs/delete_job', [JobController::class, 'deleteJob'])
+        ->name('jobs.delete_job');
+
 
     Route::post('/jobs/subscribe', [SubscribeJobController::class, 'subscribe'])
         ->name('subscribe.subscribe');

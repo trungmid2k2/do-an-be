@@ -19,7 +19,7 @@ class JobController extends Controller
         $slug = $request->input('slug');
         $searchText = $request->input('searchText');
         $skip = $request->input('skip', 0);
-        $take = $request->input('take', 15);
+        $take = $request->input('take', 10);
 
         $whereSearch = $searchText
             ? [['title', 'like', '%' . $searchText . '%']]
@@ -40,6 +40,7 @@ class JobController extends Controller
                     ->where($whereSearch);
             }
 
+            $query = Job::query();
             $total = $query->count();
 
             $result = $query->select('*')
@@ -51,7 +52,7 @@ class JobController extends Controller
                 ->take($take)
                 ->get();
 
-           
+
             return response()->json(['total' => $total, 'data' => $result]);
         } catch (\Exception $error) {
             return response()->json([
@@ -121,12 +122,12 @@ class JobController extends Controller
         }
         try {
             $result = Job::where('id', $jobId)->update($data);
-            
 
-            if($chosen >= 0){
+
+            if ($chosen >= 0) {
                 JobSubcrible::where('userId', $chosen)
-                ->where('jobId', $jobId)
-                ->update(['isChosen'=> true]);
+                    ->where('jobId', $jobId)
+                    ->update(['isChosen' => true]);
             }
 
             return response()->json($result, 200);
@@ -135,6 +136,22 @@ class JobController extends Controller
             return response()->json([
                 'error' => $chosen,
                 'message' => "Error occurred while updating job",
+            ], 400);
+        }
+    }
+    public function deleteJob(request $request): JsonResponse
+    {
+        $jobId = $request->input('jobId');
+        try {
+            $result = Job::where('id', $jobId)->delete();
+            return response()->json([
+                'message' => "Job deleted successfully",
+                // 'job' => $result,
+            ], 200);
+        } catch (\Exception $error) {
+            return response()->json([
+                'error' => $error->getMessage(),
+                'message' => "Error occurred while deleting job",
             ], 400);
         }
     }

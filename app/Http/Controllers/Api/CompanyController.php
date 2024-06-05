@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Company;
+use App\Models\Job;
 use App\Models\MemberCompany;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -89,6 +90,45 @@ class CompanyController extends Controller
         }
     }
 
+    public function jobsCompany(Request $request): JsonResponse
+    {
+
+        try {
+            $company = Company::all();
+            return response()->json($company);
+        } catch (\Exception $error) {
+            return response()->json([
+                'error' => $error->getMessage(),
+                'message' => 'Error occurred while fetching companies'
+            ], 400);
+        }
+    }
+
+    public function getListCompanies(Request $request): JsonResponse
+    {
+        $skip = $request->input("skip", 0);
+        $take = $request->input("take", 10);
+        $searchText = $request->input("searchText", '');
+        $whereSearch = $searchText
+            ? [['name', 'like', '%' . $searchText . '%']]
+            : [];
+        try {
+            $query = Company::query();
+            if (!empty($searchText)) {
+                $query->where('name', 'like', '%' . $searchText . '%');
+            }
+            $companies = $query->where($whereSearch)->skip($skip)->take($take)->get();
+            $totalCompany = $query->count();
+        } catch (\Exception $error) {
+            return response()->json([
+                'error' => $error->getMessage(),
+                'message' => 'Error occurred while fetching companies'
+            ], 400);
+        }
+
+        return response()->json(["total" => $totalCompany, "data" => $companies]);
+    }
+
     public function createCompany(request $request): JsonResponse
     {
         $data = $request->validate([
@@ -126,6 +166,24 @@ class CompanyController extends Controller
                 'error' => $error->getMessage(),
                 'message' => 'Error occurred while adding a new company.',
             ], 400);
+        }
+    }
+    public function deleteCompany(Request $request): JsonResponse
+    {
+        $companyId = $request->input('companyId');
+
+        try {
+            $company = Company::find($companyId);
+            if (!$company) {
+                return response()->json(['error' => 'Company not found.'], 404);
+            }
+
+            $company->delete();
+
+            return response()->json(['message' => 'Company deleted successfully.']);
+        } catch (\Exception $error) {
+            Log::error('Error occurred: ' . $error->getMessage());
+            return response()->json(['error' => $error->getMessage(), 'message' => 'Error occurred while deleting company.'], 400);
         }
     }
 }
