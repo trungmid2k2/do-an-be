@@ -68,6 +68,7 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
 
     Route::get('/admin/statistics', [StatisticsController::class, 'getStatistics']);
     Route::get('/admin/get_quantity', [StatisticsController::class, 'getQuantity']);
+    Route::get('/admin/get_data_created', [StatisticsController::class, 'getDataCreated']);
 
     // ->name('user.getAllUsers');
 
