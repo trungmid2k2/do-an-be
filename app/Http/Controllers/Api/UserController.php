@@ -55,7 +55,8 @@ class UserController extends Controller
     {
 
         $requestData = $request->all();
-        $id = $request->user()->id;
+        // $id = $request->user()->id;
+        $id = $request->input('id');
         $email = $requestData['email'] ?? null;
         $data = array_diff_key($requestData, array_flip(['id', 'email']));
 
@@ -77,8 +78,25 @@ class UserController extends Controller
             return response()->json(['error' => 'Error updating user profile.'], 500);
         }
     }
+    public function adminEditUser(Request $request, $id): JsonResponse
+    {
+        try {
+            $user = User::find($id);
+            if (!$user) {
+                return response()->json(['error' => 'User not found.'], 404);
+            }
 
-    // Function to correct skills (you can adjust this to your logic)
+            $userData = $request->all();
+
+            $user->update($userData);
+
+            return response()->json(['message' => 'User updated successfully.', 'user' => $user]);
+        } catch (\Exception $error) {
+            Log::error('Error occurred: ' . $error->getMessage());
+            return response()->json(['error' => $error->getMessage(), 'message' => 'Error occurred while updating user.'], 400);
+        }
+    }
+
 
     public function getuserCompanies(Request $request): JsonResponse
     {

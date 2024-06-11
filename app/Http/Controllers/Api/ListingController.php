@@ -12,7 +12,7 @@ class ListingController extends Controller
 {
     public function getAll(request $request): JsonResponse
     {
-        // $params = $request->query();
+        $params = $request->query();
         $category = $request->input('category');
         $filter = $request->input('filter');
         $searchText = $request->input('searchText');

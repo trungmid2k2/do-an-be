@@ -168,6 +168,28 @@ class CompanyController extends Controller
             ], 400);
         }
     }
+
+    public function updateCompany(Request $request): JsonResponse
+    {
+        $id = $request->input("id");
+        $data = $request->all();
+
+        try {
+            $company = Company::findOrFail($id);
+            // Cập nhật thông tin công ty
+            $company->update($data);
+
+
+            return response()->json(["company" => $company]);
+        } catch (\Exception $error) {
+            Log::error('Error occurred: ' . $error->getMessage());
+            return response()->json([
+                'error' => $error->getMessage(),
+                'message' => 'An error occurred while updating the company.',
+            ], 400);
+        }
+    }
+
     public function deleteCompany(Request $request): JsonResponse
     {
         $companyId = $request->input('companyId');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Comment;
 use App\Models\Company;
 use App\Models\Job;
+use App\Models\JobSubcrible;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -29,51 +30,7 @@ class StatisticsController extends Controller
             "company_count" => $companyCount
         ]);
     }
-    // public function getQuantity()
-    // {
-    //     try {
-    //         $statisticsUser = Cache::remember('statistics', 600, function () {
-    //             $userCount = User::where('role', 'USER')->count();
 
-    //             $today = Carbon::today();
-    //             $yesterday = Carbon::yesterday();
-    //             $startOfWeek = Carbon::now()->startOfWeek();
-    //             $endOfWeek = Carbon::now()->endOfWeek();
-    //             $startOfLastWeek = Carbon::now()->subWeek()->startOfWeek();
-    //             $endOfLastWeek = Carbon::now()->subWeek()->endOfWeek();
-    //             $startOfMonth = Carbon::now()->startOfMonth();
-    //             $endOfMonth = Carbon::now()->endOfMonth();
-    //             $startOfLastMonth = Carbon::now()->subMonth()->startOfMonth();
-    //             $endOfLastMonth = Carbon::now()->subMonth()->endOfMonth();
-
-    //             $usersToday = User::whereDate('created_at', $today)->count();
-
-    //             $usersYesterday = User::whereDate('created_at', $yesterday)->count();
-    //             $usersThisWeek = User::whereBetween('created_at', [$startOfWeek, $endOfWeek])->count();
-
-    //             $usersLastWeek = User::whereBetween('created_at', [$startOfLastWeek, $endOfLastWeek])->count();
-    //             $usersThisMonth = User::whereBetween('created_at', [$startOfMonth, $endOfMonth])->count();
-    //             $usersLastMonth = User::whereBetween('created_at', [$startOfLastMonth, $endOfLastMonth])->count();
-
-    //             return [
-    //                 'user_created_count' => $userCount,
-    //                 'users_created_today' => $usersToday,
-    //                 'users_created_yesterday' => $usersYesterday,
-    //                 "users_created_this_week" => $usersThisWeek,
-    //                 "users_created_this_month" => $usersThisMonth,
-    //                 'users_created_last_week' => $usersLastWeek,
-    //                 'users_created_last_month' => $usersLastMonth,
-    //             ];
-    //         });
-
-    //         return response()->json(["user" => $statisticsUser]);
-    //     } catch (\Exception $e) {
-    //         return response()->json([
-    //             'error' => 'Unable to retrieve statistics',
-    //             'message' => $e->getMessage()
-    //         ], 500);
-    //     }
-    // }
     public function getDataCreated()
     {
         try {
@@ -94,6 +51,25 @@ class StatisticsController extends Controller
                     $weekData[strtolower($day->format('l'))] = User::whereDate('created_at', $day)->count();
                 }
                 $statisticsData['week'] = $weekData;
+
+                // Data for each day of last week (Users)
+                $startOfLastWeek = $startOfWeek->copy()->subWeek();
+                $lastWeekData = [];
+                for ($i = 0; $i < 7; $i++) {
+                    $day = $startOfLastWeek->copy()->addDays($i);
+                    $lastWeekData[strtolower($day->format('l'))] = User::whereDate('created_at', $day)->count();
+                }
+                $statisticsData['last_week'] = $lastWeekData;
+
+                // Weekly comparison (Users)
+                $currentWeekTotal = array_sum($weekData);
+                $lastWeekTotal = array_sum($lastWeekData);
+                $statisticsData['week_comparison'] = [
+                    'current_week_total' => $currentWeekTotal,
+                    'last_week_total' => $lastWeekTotal,
+                    'difference' => $currentWeekTotal - $lastWeekTotal,
+                    'percentage_change' => $lastWeekTotal > 0 ? (($currentWeekTotal - $lastWeekTotal) / $lastWeekTotal) * 100 : null,
+                ];
 
                 // Data for each month of this year (Users)
                 $startOfYear = Carbon::now()->startOfYear();
@@ -120,6 +96,24 @@ class StatisticsController extends Controller
                 }
                 $jobStatisticsData['week'] = $jobWeekData;
 
+                // Data for each day of last week (Jobs)
+                $jobLastWeekData = [];
+                for ($i = 0; $i < 7; $i++) {
+                    $day = $startOfLastWeek->copy()->addDays($i);
+                    $jobLastWeekData[strtolower($day->format('l'))] = Job::whereDate('created_at', $day)->count();
+                }
+                $jobStatisticsData['last_week'] = $jobLastWeekData;
+
+                // Weekly comparison (Jobs)
+                $currentJobWeekTotal = array_sum($jobWeekData);
+                $lastJobWeekTotal = array_sum($jobLastWeekData);
+                $jobStatisticsData['week_comparison'] = [
+                    'current_week_total' => $currentJobWeekTotal,
+                    'last_week_total' => $lastJobWeekTotal,
+                    'difference' => $currentJobWeekTotal - $lastJobWeekTotal,
+                    'percentage_change' => $lastJobWeekTotal > 0 ? (($currentJobWeekTotal - $lastJobWeekTotal) / $lastJobWeekTotal) * 100 : null,
+                ];
+
                 // Data for each month of this year (Jobs)
                 $jobYearData = [];
                 for ($i = 0; $i < 12; $i++) {
@@ -144,6 +138,24 @@ class StatisticsController extends Controller
                 }
                 $companyStatisticsData['week'] = $companyWeekData;
 
+                // Data for each day of last week (Companies)
+                $companyLastWeekData = [];
+                for ($i = 0; $i < 7; $i++) {
+                    $day = $startOfLastWeek->copy()->addDays($i);
+                    $companyLastWeekData[strtolower($day->format('l'))] = Company::whereDate('created_at', $day)->count();
+                }
+                $companyStatisticsData['last_week'] = $companyLastWeekData;
+
+                // Weekly comparison (Companies)
+                $currentCompanyWeekTotal = array_sum($companyWeekData);
+                $lastCompanyWeekTotal = array_sum($companyLastWeekData);
+                $companyStatisticsData['week_comparison'] = [
+                    'current_week_total' => $currentCompanyWeekTotal,
+                    'last_week_total' => $lastCompanyWeekTotal,
+                    'difference' => $currentCompanyWeekTotal - $lastCompanyWeekTotal,
+                    'percentage_change' => $lastCompanyWeekTotal > 0 ? (($currentCompanyWeekTotal - $lastCompanyWeekTotal) / $lastCompanyWeekTotal) * 100 : null,
+                ];
+
                 // Data for each month of this year (Companies)
                 $companyYearData = [];
                 for ($i = 0; $i < 12; $i++) {
@@ -155,7 +167,7 @@ class StatisticsController extends Controller
                 return [
                     'user_statistics' => $statisticsData,
                     'job_statistics' => $jobStatisticsData,
-                    'company_statistics' => $companyStatisticsData
+                    'company_statistics' => $companyStatisticsData,
                 ];
             });
 
@@ -163,6 +175,28 @@ class StatisticsController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Unable to retrieve statistics',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getDataSubscribesJob()
+    {
+        try {
+            $query = JobSubcrible::all();
+
+            if ($query->isEmpty()) {
+                return response()->json([
+                    'message' => 'No subscriptions found'
+                ], 404);
+            }
+
+            return response()->json($query, 200);
+        } catch (\Exception $e) {
+            // \Log::error('Error while fetching data: ' . $e->getMessage());
+
+            return response()->json([
+                'error' => 'Error while fetching data',
                 'message' => $e->getMessage()
             ], 500);
         }
