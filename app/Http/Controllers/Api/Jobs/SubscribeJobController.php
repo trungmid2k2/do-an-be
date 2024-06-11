@@ -38,7 +38,7 @@ class SubscribeJobController extends Controller
                 ->where('isActive', true)
                 ->get();
 
-            return response()->json(!$result->isEmpty(), 200);
+            return response()->json($result);
         } catch (\Exception $error) {
             return response()->json([
                 'error' => $error->getMessage(),
