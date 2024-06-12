@@ -53,6 +53,9 @@ Route::get('/comment', [CommentController::class, 'get'])
 Route::put('/reset_password/{token}', [NewPasswordController::class, 'resetPassword']);
 Route::post('/forgot_password', [NewPasswordController::class, 'forgot_password']);
 
+Route::put('/company/update_company', [CompanyController::class, 'updateCompany']);
+
+
 Route::middleware(['auth:api', 'verified'])->group(function () {
     Route::post('/user/update', [UserController::class, 'update'])
         ->name('user.update');
@@ -69,6 +72,10 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
     Route::get('/admin/statistics', [StatisticsController::class, 'getStatistics']);
     Route::get('/admin/get_quantity', [StatisticsController::class, 'getQuantity']);
     Route::get('/admin/get_data_created', [StatisticsController::class, 'getDataCreated']);
+    Route::get('/admin/get_data_created_month', [StatisticsController::class, 'getDataCreatedByMonth']);
+
+
+
     Route::post('/admin/edit_user', [UserController::class, 'adminEditUser']);
 
     // ->name('user.getAllUsers');
@@ -90,7 +97,6 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
         ->name('company.listCompany');
     Route::get('/company/get_list_companies', [CompanyController::class, 'getListCompanies']);
     Route::get('/company/jobs_company', [CompanyController::class, 'jobsCompany']);
-    Route::put('/company/update_company', [CompanyController::class, 'updateCompany']);
     Route::delete('/company/delete', [CompanyController::class, 'deleteCompany']);
 
 

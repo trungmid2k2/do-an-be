@@ -180,6 +180,52 @@ class StatisticsController extends Controller
         }
     }
 
+    public function getDataCreatedByMonth(Request $request)
+    {
+        try {
+            $month = strtolower($request->query('month')); // Get month from query parameters and convert to lowercase
+            $statistics = Cache::remember("statistics_$month", 600, function () use ($month) {
+                // Function to gather statistics
+                function gatherStatistics($model, $role = null, $month)
+                {
+                    $startOfMonth = Carbon::parse($month)->startOfMonth();
+                    $endOfMonth = Carbon::parse($month)->endOfMonth();
+
+                    $data = [];
+                    for ($day = $startOfMonth; $day <= $endOfMonth; $day->addDay()) {
+                        $count = $role ? $model::where('role', $role)->whereDate('created_at', $day)->count() : $model::whereDate('created_at', $day)->count();
+
+                        // Format date as YYYY-MM-DD
+                        $formattedDate = $day->toDateString();
+
+                        // Add data for current day to the array
+                        $data[$formattedDate] = $count;
+                    }
+
+                    return $data;
+                }
+
+                // Gather statistics for each model
+                $userStatistics = gatherStatistics(User::class, 'USER', $month);
+                $jobStatistics = gatherStatistics(Job::class, null, $month);
+                $companyStatistics = gatherStatistics(Company::class, null, $month);
+
+                return [
+                    'user_statistics' => $userStatistics,
+                    'job_statistics' => $jobStatistics,
+                    'company_statistics' => $companyStatistics,
+                ];
+            });
+
+            return response()->json($statistics);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Unable to retrieve statistics',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function getDataSubscribesJob()
     {
         try {
