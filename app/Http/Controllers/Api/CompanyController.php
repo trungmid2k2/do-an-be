@@ -9,6 +9,7 @@ use App\Models\MemberCompany;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class CompanyController extends Controller
@@ -175,13 +176,17 @@ class CompanyController extends Controller
         $data = $request->all();
 
         try {
+            DB::beginTransaction();
+
             $company = Company::findOrFail($id);
-            // Cập nhật thông tin công ty
+
             $company->update($data);
 
+            DB::commit();
 
             return response()->json(["company" => $company]);
         } catch (\Exception $error) {
+            DB::rollBack();
             Log::error('Error occurred: ' . $error->getMessage());
             return response()->json([
                 'error' => $error->getMessage(),
